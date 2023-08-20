@@ -1,26 +1,42 @@
-import { useState } from "react";
-import Counter from "./Components/Counter";
+import {
+  HelpSection,
+  Navbar,
+  Categories,
+  AllCard,
+  SingleProduct,
+  MenCategory,
+} from "./Components/components.js";
 
-const App = () => {
-  console.log("APp");
-  const [count, setCount] = useState(0);
+import { Routes, Route, Outlet } from "react-router-dom";
 
-  const increaseCount = () => {
-    setCount((prevData) => prevData + 1);
-  };
-
-  const dercreaseCount = () => {
-    setCount((prevData) => prevData - 1);
-  };
-
+const BasicLayout = () => {
   return (
     <>
-      <Counter
-        count={count}
-        increaseCount={increaseCount}
-        dercreaseCount={dercreaseCount}
-        obj={{ name: "mahdi" }}
-      />
+      <HelpSection />
+      <Navbar />
+      <Categories />
+      <Outlet />
+    </>
+  );
+};
+
+const App = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<BasicLayout />}>
+          <Route index element={<AllCard />} />
+          <Route path="products" element={<AllCard />} />
+          <Route path="/products/:category" element={<MenCategory />} />
+          <Route
+            path="/products/:category/products/:productId"
+            element={<SingleProduct />}
+          />
+          <Route path="/womenProducts" element={<AllCard />} />
+          <Route path="/womenProducts/:category" element={<MenCategory />} />
+          <Route path="*" element={<h2>Not found</h2>} />
+        </Route>
+      </Routes>
     </>
   );
 };
