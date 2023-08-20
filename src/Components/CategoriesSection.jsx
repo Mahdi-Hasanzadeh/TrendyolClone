@@ -56,7 +56,7 @@ const Categories = () => {
       <Container
         sx={{
           backgroundColor: "rgb(91, 91, 91)",
-          overflowX: "scroll",
+          overflowX: "auto",
         }}
         maxWidth="xl"
       >
@@ -65,8 +65,9 @@ const Categories = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: 2,
+            gap: 1,
             flexWrap: "nowrap",
+            width: "800px",
           }}
         >
           {categories.map((item, index) => {

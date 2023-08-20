@@ -3,11 +3,17 @@ import { ProductCard } from "./components.js";
 import { products } from "./Products.js";
 const AllCard = () => {
   return (
-    <Box display="flex" justifyContent={"space-around"}>
-      <Grid container mx={5} spacing={2}>
+    <Box display="flex" mx={4} justifyContent={"space-around"}>
+      <Grid container spacing={2}>
         {products.map((product) => {
           return (
-            <Grid key={product.id} item xs={6} justifyContent={"center"}>
+            <Grid
+              key={product.id}
+              item
+              xs={12}
+              sm={6}
+              justifyContent={"center"}
+            >
               <ProductCard product={product} />
             </Grid>
           );

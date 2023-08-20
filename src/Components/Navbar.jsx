@@ -1,5 +1,6 @@
 import {
   FavoriteBorderRounded,
+  HomeRounded,
   LocalShippingRounded,
   Person2Rounded,
   ShoppingBagRounded,
@@ -46,7 +47,7 @@ const Navbar = () => {
         <Box
           sx={{
             display: "flex",
-            justifyContent: { xs: "center", md: "space-around" },
+            justifyContent: { xs: "space-around", md: "space-around" },
             alignItems: "center",
             gap: 3,
             height: 75,
@@ -54,6 +55,7 @@ const Navbar = () => {
           }}
         >
           <Typography
+            display={{ xs: "none", sm: "flex" }}
             variant="h4"
             fontStyle={"italic"}
             sx={{
@@ -67,6 +69,20 @@ const Navbar = () => {
               trendyol
             </NavLink>
           </Typography>
+
+          <Box display={{ xs: "flex", sm: "none" }}>
+            <NavLink
+              to="/"
+              className={`${Styles.navLink} ${Styles.navLinkBrand}`}
+            >
+              <HomeRounded
+                sx={{
+                  color: "white",
+                }}
+              />
+            </NavLink>
+          </Box>
+
           <Box
             sx={{
               display: { xs: "none", md: "flex" },
@@ -92,13 +108,13 @@ const Navbar = () => {
                 value={searchParams.get("filter") || ""}
                 variant="filled"
                 placeholder="Type the item,category or brand you are looking"
-                size="medium"
+                size="small"
                 label="Search"
                 fullWidth
                 sx={{
                   bgcolor: "whitesmoke",
                   maxWidth: "350px",
-                  minWidth: "290px",
+                  minWidth: "240px",
                   borderRadius: 1,
                   borderColor: "red",
                   "&:focus": {

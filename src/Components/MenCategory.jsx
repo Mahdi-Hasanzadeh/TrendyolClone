@@ -14,6 +14,9 @@ import {
   List,
   Divider,
   Chip,
+  Drawer,
+  SwipeableDrawer,
+  Fab,
 } from "@mui/material";
 
 import { RadioButtonsListWithCollapse, MyListItem } from "./components.js";
@@ -23,6 +26,7 @@ import { NavLink, useSearchParams } from "react-router-dom";
 
 import { BreadCrumbsLinks } from "./components";
 import { useState } from "react";
+import { Menu, MenuOpen } from "@mui/icons-material";
 
 const MenCategory = () => {
   //#region UseParams and UseSearchParams
@@ -31,6 +35,8 @@ const MenCategory = () => {
   //#endregion
 
   //#region State for Collapsable Sections
+
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [openGenderSection, setOpenGenderSection] = useState(false);
   const [openCategorySection, setOpenCategorySection] = useState(false);
   const [openSizeSection, setOpenSizeSection] = useState(false);
@@ -69,6 +75,9 @@ const MenCategory = () => {
       default:
         return;
     }
+  };
+  const handleOpenDrawer = () => {
+    setOpenDrawer((prevData) => !prevData);
   };
   //#endregion
 
@@ -231,8 +240,10 @@ const MenCategory = () => {
           height: "100px",
           backgroundColor: "rgb(240,240,240)",
           display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
+          gap: 1.2,
+          flexDirection: { xs: "column", sm: "row" },
+          justifyContent: { xs: "center", sm: "space-around" },
+          alignItems: { xs: "center", sm: "center" },
         }}
       >
         <Box
@@ -251,16 +262,15 @@ const MenCategory = () => {
         </Box>
         {/* Select Filters for the products */}
         <Box
-          sx={{
-            width: "250px",
-          }}
+        // sx={{
+        //   width: "250px",
+        // }}
         >
           <TextField
-            fullWidth
             select
+            size="small"
             label="Select"
             defaultValue={filters[0]}
-            helperText=""
           >
             {filters.map((option) => {
               return (
@@ -275,6 +285,138 @@ const MenCategory = () => {
 
       <Stack m={1} direction="row">
         {/* Filters Section */}
+        {/* <Drawer anchor="left" open={true}></Drawer> */}
+        <SwipeableDrawer
+          sx={{
+            display: { xs: "block", md: "none" },
+          }}
+          anchor="top"
+          open={openDrawer}
+          onClose={handleOpenDrawer}
+        >
+          <Fab
+            onClick={handleOpenDrawer}
+            size="small"
+            sx={{
+              position: "fixed",
+              top: 5,
+              right: 5,
+              display: { xs: "block", md: "none" },
+            }}
+          >
+            {openDrawer ? <MenuOpen /> : <Menu />}
+          </Fab>
+          <List
+            sx={{
+              mt: 3,
+              // overflowY: "auto",
+            }}
+          >
+            {/* Gender Section */}
+            <MyListItem
+              handleOpen={() => {
+                handleOpen("gender");
+              }}
+              primary={"Gender"}
+              isOpen={openGenderSection}
+              badgeValue={genderValue ? true : false}
+            >
+              <RadioButtonsListWithCollapse
+                open={openGenderSection}
+                radioButtonValue={genderValue}
+                radioButtonOnChange={handleGenderValue}
+                radioButtonsInfo={["Men", "Women"]}
+              />
+            </MyListItem>
+            <Divider
+              sx={{
+                my: 1,
+              }}
+            />
+            {/* Category Section */}
+            <MyListItem
+              isOpen={openCategorySection}
+              primary={"Category"}
+              handleOpen={() => {
+                handleOpen("category");
+              }}
+              badgeValue={categoryValue ? 1 : 0}
+            >
+              <RadioButtonsListWithCollapse
+                open={openCategorySection}
+                radioButtonOnChange={handleCategoryValue}
+                radioButtonValue={categoryValue}
+                radioButtonsInfo={["Jeans", "Sweater", "Pants"]}
+              />
+            </MyListItem>
+            <Divider
+              sx={{
+                my: 1,
+              }}
+            />
+            {/* Size Section */}
+            <MyListItem
+              isOpen={openSizeSection}
+              primary={"Size"}
+              handleOpen={() => {
+                handleOpen("size");
+              }}
+              badgeValue={sizeValue !== "All Sizes" ? 1 : 0}
+            >
+              <RadioButtonsListWithCollapse
+                open={openSizeSection}
+                radioButtonOnChange={handleSizeValue}
+                radioButtonValue={sizeValue}
+                radioButtonsInfo={["All Sizes", "XS", "S", "M", "L"]}
+              />
+            </MyListItem>
+            <Divider
+              sx={{
+                my: 1,
+              }}
+            />
+            {/* Color Section */}
+
+            <MyListItem
+              isOpen={openColorSection}
+              primary={"Color"}
+              handleOpen={() => {
+                handleOpen("color");
+              }}
+              badgeValue={colorValue !== "All Colors" ? 1 : 0}
+            >
+              <RadioButtonsListWithCollapse
+                open={openColorSection}
+                radioButtonOnChange={handleColorValue}
+                radioButtonValue={colorValue}
+                radioButtonsInfo={[
+                  "All Colors",
+                  "Black",
+                  "Blue",
+                  "Gray",
+                  "White",
+                ]}
+              />
+            </MyListItem>
+            <Divider
+              sx={{
+                my: 1,
+              }}
+            />
+          </List>
+        </SwipeableDrawer>
+        <Fab
+          onClick={handleOpenDrawer}
+          size="small"
+          sx={{
+            position: "fixed",
+            bottom: 10,
+            left: 3,
+            display: { xs: "block", md: "none" },
+          }}
+        >
+          {openDrawer ? <MenuOpen /> : <Menu />}
+        </Fab>
         <Box
           flex={{ xs: 0, sm: 1 }}
           sx={{
