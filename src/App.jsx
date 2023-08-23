@@ -5,6 +5,7 @@ import {
   AllCard,
   SingleProduct,
   MenCategory,
+  Bag,
 } from "./Components/components.js";
 
 import { Routes, Route, Outlet } from "react-router-dom";
@@ -32,6 +33,7 @@ const App = () => {
             path="/products/:category/products/:productId"
             element={<SingleProduct />}
           />
+          <Route path="/cart" element={<Bag />} />
           <Route path="/womenProducts" element={<AllCard />} />
           <Route path="/womenProducts/:category" element={<MenCategory />} />
           <Route path="*" element={<h2>Not found</h2>} />

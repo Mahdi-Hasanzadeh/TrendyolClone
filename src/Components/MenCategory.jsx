@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router";
-import { MenCategories, GetMenProductsByFilter } from "./Products";
+
 import {
   Breadcrumbs,
   Card,
@@ -17,68 +17,55 @@ import {
   Drawer,
   SwipeableDrawer,
   Fab,
+  useScrollTrigger,
+  Fade,
+  Skeleton,
+  CircularProgress,
+  Modal,
 } from "@mui/material";
 
-import { RadioButtonsListWithCollapse, MyListItem } from "./components.js";
+import { SidebarContent, LoadingComponent } from "./components.js";
 
 import { NavLink, useSearchParams } from "react-router-dom";
 // import Categories from "./CategoriesSection";
 
 import { BreadCrumbsLinks } from "./components";
-import { useState } from "react";
-import { Menu, MenuOpen } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { KeyboardArrowUp, Menu, MenuOpen } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMenProducts } from "../MenCategorySlice";
+
+const imageFolderPath = "../../public/";
 
 const MenCategory = () => {
+  const menProducts = useSelector((store) => store.MenProducts);
+  const dispatch = useDispatch();
+  const location = useLocation();
+  // console.log(menProducts);
+
   //#region UseParams and UseSearchParams
   // const { category } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   //#endregion
 
-  //#region State for Collapsable Sections
+  //#region State for Drawer and Chips
 
   const [openDrawer, setOpenDrawer] = useState(false);
-  const [openGenderSection, setOpenGenderSection] = useState(false);
-  const [openCategorySection, setOpenCategorySection] = useState(false);
-  const [openSizeSection, setOpenSizeSection] = useState(false);
-  const [openPriceSection, setOpenPriceSection] = useState(false);
-  const [openColorSection, setOpenColorSection] = useState(false);
+
   const [ChipFilters, setChipFilters] = useState({
     gender: "Men",
     color: "All Colors",
     size: "All Sizes",
   });
+
   //#endregion
 
-  //#region Handle Function for Open Collapsable Sections
+  //#region Handle Drawer
 
-  const handleOpen = (event) => {
-    switch (event) {
-      case "gender": {
-        setOpenGenderSection((prevData) => !prevData);
-        break;
-      }
-      case "category": {
-        setOpenCategorySection((prevData) => !prevData);
-        break;
-      }
-      case "size": {
-        setOpenSizeSection((prevData) => !prevData);
-        break;
-      }
-      case "price": {
-        setOpenPriceSection((prevData) => !prevData);
-        break;
-      }
-      case "color": {
-        setOpenColorSection((prevData) => !prevData);
-      }
-      default:
-        return;
-    }
-  };
   const handleOpenDrawer = () => {
     setOpenDrawer((prevData) => !prevData);
   };
+
   //#endregion
 
   //#region  State for Values of Radio Buttons
@@ -88,6 +75,7 @@ const MenCategory = () => {
   const [sizeValue, setSizeValue] = useState("All Sizes");
   const [priceValue, setPriceValue] = useState(null);
   const [colorValue, setColorValue] = useState("All Colors");
+
   //#endregion
 
   //#region Handle Value for Filters
@@ -188,17 +176,17 @@ const MenCategory = () => {
 
   const params = searchParams.get("filter");
 
-  let filteredMenProduct = [...MenCategories];
-  if (sizeValue && colorValue) {
-    filteredMenProduct = GetMenProductsByFilter(sizeValue, colorValue);
-    // } else {
-    //   if (sizeValue) {
-    //     filteredMenProduct = GetMenProductsByFilter(sizeValue);
-    //   }
-    //   if (colorValue) {
-    //     filteredMenProduct = GetMenProductsByFilter("", colorValue);
-    //   }
-  }
+  let filteredMenProduct = [...menProducts.menProducts];
+  // if (sizeValue !== "All Sizes") {
+  //   filteredMenProduct = filteredMenProduct.filter(
+  //     (item) => item.size.toLowerCase() === sizeValue.toLowerCase()
+  //   );
+  // }
+  // if (colorValue !== "All Colors") {
+  //   filteredMenProduct = filteredMenProduct.filter(
+  //     (item) => item.color.toLowerCase() === colorValue.toLowerCase()
+  //   );
+  // }
 
   // Check that if search Params is available or not
   if (params) {
@@ -209,11 +197,16 @@ const MenCategory = () => {
     );
   }
 
+  useEffect(() => {
+    setOpenDrawer(false);
+    dispatch(fetchMenProducts({ sizeValue, colorValue, categoryValue }));
+  }, [sizeValue, colorValue, categoryValue]);
+
   // Page Section
   return (
     <>
       {/* Breadcrumb section */}
-      <Box>
+      <Box id="top">
         <Breadcrumbs
           separator=">"
           sx={{
@@ -285,11 +278,11 @@ const MenCategory = () => {
 
       <Stack m={1} direction="row">
         {/* Filters Section */}
-        {/* <Drawer anchor="left" open={true}></Drawer> */}
         <SwipeableDrawer
           sx={{
-            display: { xs: "block", md: "none" },
+            display: { xs: "flex", md: "none" },
           }}
+          onOpen={handleOpenDrawer}
           anchor="top"
           open={openDrawer}
           onClose={handleOpenDrawer}
@@ -306,104 +299,36 @@ const MenCategory = () => {
           >
             {openDrawer ? <MenuOpen /> : <Menu />}
           </Fab>
-          <List
+          <Box
             sx={{
-              mt: 3,
-              // overflowY: "auto",
+              display: "flex",
+              justifyContent: "center",
+              mt: 2,
             }}
           >
-            {/* Gender Section */}
-            <MyListItem
-              handleOpen={() => {
-                handleOpen("gender");
-              }}
-              primary={"Gender"}
-              isOpen={openGenderSection}
-              badgeValue={genderValue ? true : false}
-            >
-              <RadioButtonsListWithCollapse
-                open={openGenderSection}
-                radioButtonValue={genderValue}
-                radioButtonOnChange={handleGenderValue}
-                radioButtonsInfo={["Men", "Women"]}
-              />
-            </MyListItem>
-            <Divider
-              sx={{
-                my: 1,
-              }}
-            />
-            {/* Category Section */}
-            <MyListItem
-              isOpen={openCategorySection}
-              primary={"Category"}
-              handleOpen={() => {
-                handleOpen("category");
-              }}
-              badgeValue={categoryValue ? 1 : 0}
-            >
-              <RadioButtonsListWithCollapse
-                open={openCategorySection}
-                radioButtonOnChange={handleCategoryValue}
-                radioButtonValue={categoryValue}
-                radioButtonsInfo={["Jeans", "Sweater", "Pants"]}
-              />
-            </MyListItem>
-            <Divider
-              sx={{
-                my: 1,
-              }}
-            />
-            {/* Size Section */}
-            <MyListItem
-              isOpen={openSizeSection}
-              primary={"Size"}
-              handleOpen={() => {
-                handleOpen("size");
-              }}
-              badgeValue={sizeValue !== "All Sizes" ? 1 : 0}
-            >
-              <RadioButtonsListWithCollapse
-                open={openSizeSection}
-                radioButtonOnChange={handleSizeValue}
-                radioButtonValue={sizeValue}
-                radioButtonsInfo={["All Sizes", "XS", "S", "M", "L"]}
-              />
-            </MyListItem>
-            <Divider
-              sx={{
-                my: 1,
-              }}
-            />
-            {/* Color Section */}
-
-            <MyListItem
-              isOpen={openColorSection}
-              primary={"Color"}
-              handleOpen={() => {
-                handleOpen("color");
-              }}
-              badgeValue={colorValue !== "All Colors" ? 1 : 0}
-            >
-              <RadioButtonsListWithCollapse
-                open={openColorSection}
-                radioButtonOnChange={handleColorValue}
-                radioButtonValue={colorValue}
-                radioButtonsInfo={[
-                  "All Colors",
-                  "Black",
-                  "Blue",
-                  "Gray",
-                  "White",
-                ]}
-              />
-            </MyListItem>
-            <Divider
-              sx={{
-                my: 1,
-              }}
-            />
-          </List>
+            <Typography variant="h6" fontStyle={"italic"}>
+              Trendyol
+            </Typography>
+          </Box>
+          <SidebarContent
+            gender={{ genderValue, handleGenderValue }}
+            size={{
+              sizeValue,
+              handleSizeValue,
+            }}
+            color={{
+              colorValue,
+              handleColorValue,
+            }}
+            category={{
+              categoryValue,
+              handleCategoryValue,
+            }}
+            price={{
+              priceValue,
+              handlePriceValue,
+            }}
+          />
         </SwipeableDrawer>
         <Fab
           onClick={handleOpenDrawer}
@@ -417,22 +342,41 @@ const MenCategory = () => {
         >
           {openDrawer ? <MenuOpen /> : <Menu />}
         </Fab>
-        <Box
-          flex={{ xs: 0, sm: 1 }}
-          sx={{
-            ml: 1,
-            display: { xs: "none", md: "flex" },
-          }}
-          display="flex"
-          justifyContent={"center"}
-        >
-          <List
+        {
+          <Box
+            flex={{ xs: 0, sm: 1 }}
+            sx={{
+              ml: 1,
+              display: { xs: "none", md: "flex" },
+            }}
+            display="flex"
+            justifyContent={"center"}
+          >
+            <SidebarContent
+              gender={{ genderValue, handleGenderValue }}
+              size={{
+                sizeValue,
+                handleSizeValue,
+              }}
+              color={{
+                colorValue,
+                handleColorValue,
+              }}
+              category={{
+                categoryValue,
+                handleCategoryValue,
+              }}
+              price={{
+                priceValue,
+                handlePriceValue,
+              }}
+            />
+            {/* <List
             sx={{
               mt: 3,
               // overflowY: "auto",
             }}
           >
-            {/* Gender Section */}
             <MyListItem
               handleOpen={() => {
                 handleOpen("gender");
@@ -453,7 +397,7 @@ const MenCategory = () => {
                 my: 1,
               }}
             />
-            {/* Category Section */}
+
             <MyListItem
               isOpen={openCategorySection}
               primary={"Category"}
@@ -474,7 +418,7 @@ const MenCategory = () => {
                 my: 1,
               }}
             />
-            {/* Size Section */}
+
             <MyListItem
               isOpen={openSizeSection}
               primary={"Size"}
@@ -495,7 +439,6 @@ const MenCategory = () => {
                 my: 1,
               }}
             />
-            {/* Color Section */}
 
             <MyListItem
               isOpen={openColorSection}
@@ -523,8 +466,9 @@ const MenCategory = () => {
                 my: 1,
               }}
             />
-          </List>
-        </Box>
+          </List> */}
+          </Box>
+        }
 
         {/* Products Section */}
         <Box
@@ -534,36 +478,38 @@ const MenCategory = () => {
             mt: 3,
           }}
         >
-          <Box
-            m={1}
-            display="flex"
-            justifyContent={{ xs: "center", sm: "flex-start" }}
-          >
-            {ChipFilters.gender ? (
-              <Chip
-                label={`Gender: ${ChipFilters.gender}`}
-                onDelete={() => {
-                  handleDelete("gender");
-                }}
-              />
-            ) : null}
-            {ChipFilters.color !== "All Colors" ? (
-              <Chip
-                label={`Color: ${ChipFilters.color}`}
-                onDelete={() => {
-                  handleDelete("color");
-                }}
-              />
-            ) : null}
-            {ChipFilters.size !== "All Sizes" ? (
-              <Chip
-                label={`Size: ${ChipFilters.size}`}
-                onDelete={() => {
-                  handleDelete("size");
-                }}
-              />
-            ) : null}
-          </Box>
+          {menProducts.status === "succeeded" && (
+            <Box
+              m={1}
+              display="flex"
+              justifyContent={{ xs: "center", sm: "flex-start" }}
+            >
+              {ChipFilters.gender ? (
+                <Chip
+                  label={`Gender: ${ChipFilters.gender}`}
+                  onDelete={() => {
+                    handleDelete("gender");
+                  }}
+                />
+              ) : null}
+              {ChipFilters.color !== "All Colors" ? (
+                <Chip
+                  label={`Color: ${ChipFilters.color}`}
+                  onDelete={() => {
+                    handleDelete("color");
+                  }}
+                />
+              ) : null}
+              {ChipFilters.size !== "All Sizes" ? (
+                <Chip
+                  label={`Size: ${ChipFilters.size}`}
+                  onDelete={() => {
+                    handleDelete("size");
+                  }}
+                />
+              ) : null}
+            </Box>
+          )}
           {/* Products Section */}
           <Grid
             container
@@ -575,7 +521,14 @@ const MenCategory = () => {
               justifyContent: "space-evenly",
             }}
           >
-            {filteredMenProduct.length !== 0 ? (
+            {menProducts.status === "loading" ? (
+              <LoadingComponent />
+            ) : menProducts.status === "failed" ? (
+              <Typography mt={10} variant="h4">
+                {menProducts.error}
+              </Typography>
+            ) : menProducts.status === "succeeded" &&
+              filteredMenProduct.length !== 0 ? (
               filteredMenProduct.map((item) => {
                 return (
                   <Grid
@@ -596,12 +549,10 @@ const MenCategory = () => {
                         maxWidth: 250,
                       }}
                     >
-                      <NavLink
-                        to={`products/${item.id}${useLocation().search}`}
-                      >
+                      <NavLink to={`products/${item.id}${location.search}`}>
                         <CardMedia
                           component={"img"}
-                          image={item.picture}
+                          image={`${imageFolderPath}${item.picture}`}
                           width="100%"
                         />
                       </NavLink>
@@ -627,6 +578,7 @@ const MenCategory = () => {
                           >
                             {item.productName.toUpperCase()}
                           </Typography>
+                          {/* <Skeleton variant="circular" width="400px" /> */}
 
                           {/* Product Description */}
 
@@ -678,11 +630,26 @@ const MenCategory = () => {
                   mt: 5,
                 }}
               >
-                <Typography>Not Found</Typography>
+                <Typography variant="h5" mt={10}>
+                  Not Found
+                </Typography>
               </Box>
             )}
           </Grid>
         </Box>
+
+        {/* <Fab
+          sx={{
+            position: "fixed",
+            bottom: 4,
+            right: 4,
+          }}
+          size="small"
+        >
+          <a href="#top">
+            <KeyboardArrowUp />
+          </a>
+        </Fab> */}
       </Stack>
     </>
   );

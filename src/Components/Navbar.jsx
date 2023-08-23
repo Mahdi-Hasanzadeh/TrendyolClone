@@ -17,15 +17,69 @@ import { useLocation } from "react-router";
 import { NavLink, useSearchParams } from "react-router-dom";
 
 import Styles from "../Styles.module.css";
+import { useEffect } from "react";
+
+import { fetchBags } from "../BagSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Navbar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const dispatch = useDispatch();
+  const Bag = useSelector((store) => store.Bag);
+
+  // console.log("Bag", Bag.Bag);
+
+  let badgeCount = 0;
+
+  if (Bag.status === "succeeded") {
+    console.log("badge succeeded");
+    Bag.Bag.map((item) => {
+      badgeCount = badgeCount + item.count;
+    });
+  }
+  // console.log("badgeCount: ", badgeCount);
 
   const badges = [
-    <LocalShippingRounded />,
-    <Person2Rounded />,
-    <FavoriteBorderRounded />,
-    <ShoppingBagRounded />,
+    {
+      name: "bagShopping",
+      icon: (
+        <ShoppingBagRounded
+          sx={{
+            color: "white",
+          }}
+        />
+      ),
+    },
+    {
+      name: "localShipping",
+      icon: (
+        <LocalShippingRounded
+          sx={{
+            color: "white",
+          }}
+        />
+      ),
+    },
+    {
+      name: "person",
+      icon: (
+        <Person2Rounded
+          sx={{
+            color: "white",
+          }}
+        />
+      ),
+    },
+    {
+      name: "favorite",
+      icon: (
+        <FavoriteBorderRounded
+          sx={{
+            color: "white",
+          }}
+        />
+      ),
+    },
   ];
 
   const handleChange = (e) => {
@@ -36,6 +90,11 @@ const Navbar = () => {
       setSearchParams();
     }
   };
+
+  useEffect(() => {
+    dispatch(fetchBags());
+  }, []);
+
   return (
     <>
       <Container
@@ -133,13 +192,17 @@ const Navbar = () => {
           >
             {badges.map((item, index) => {
               return (
-                <Badge key={index} badgeContent={0} color="warning">
-                  <IconButton
-                    sx={{
-                      color: "white",
-                    }}
-                  >
-                    {item}
+                <Badge
+                  key={index}
+                  badgeContent={item.name === "bagShopping" ? badgeCount : 0}
+                  color="warning"
+                >
+                  <IconButton>
+                    {item.name === "bagShopping" ? (
+                      <NavLink to="/cart">{item.icon}</NavLink>
+                    ) : (
+                      item.icon
+                    )}
                   </IconButton>
                 </Badge>
               );

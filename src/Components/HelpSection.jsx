@@ -12,9 +12,11 @@ import {
   Divider,
 } from "@mui/material";
 
-import Afghanistan from "../assets/Afghanistan.png";
+import Afghanistan from "../../public/Afghanistan.png";
 import { useState } from "react";
-import { Outlet } from "react-router";
+
+const imageFolderPath = "../../public/MenCategories/";
+
 const HelpSection = () => {
   const [open, setOpen] = useState(false);
   const [country, setCountry] = useState({

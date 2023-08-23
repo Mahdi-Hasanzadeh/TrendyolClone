@@ -1,5 +1,5 @@
 import { ListItemButton, ListItemText, ListItem, Badge } from "@mui/material";
-import { ExpandLess, ExpandMore, Male } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 const MyListItem = ({ primary, handleOpen, children, isOpen, badgeValue }) => {
   return (
     <ListItem
