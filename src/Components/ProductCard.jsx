@@ -11,7 +11,7 @@ const Product = ({ product }) => {
           maxWidth: 600,
         }}
       >
-        <CardMedia component={"img"} image={`/${product.picture}`} />
+        <CardMedia component={"img"} image={`/public/${product.picture}`} />
       </Card>
     </Link>
   );
