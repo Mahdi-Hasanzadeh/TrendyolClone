@@ -222,7 +222,7 @@ const SingleProduct = () => {
                 >
                   <CardMedia
                     component={"img"}
-                    image={`/${singleProduct.singleProduct.picture}`}
+                    image={`../public/${singleProduct.singleProduct.picture}`}
                   />
                 </Card>
               </Box>
