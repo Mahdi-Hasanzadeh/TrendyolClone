@@ -8,6 +8,7 @@ import "@fontsource/roboto";
 import { HashRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./ReduxConfig.js";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <HashRouter>

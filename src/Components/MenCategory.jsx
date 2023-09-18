@@ -33,14 +33,16 @@ import { BreadCrumbsLinks } from "./components";
 import { useEffect, useState } from "react";
 import { KeyboardArrowUp, Menu, MenuOpen } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMenProducts } from "../MenCategorySlice";
-
-const imageFolderPath = "../../public/";
-
+import { fetchMenProducts } from "../AllSlices/MenCategorySlice.js";
+import { priceAfterDiscount } from "../Utility/PriceDiscount.jsx";
+import { updateScrollValue } from "../AllSlices/ScrollSlice.js";
 const MenCategory = () => {
   const menProducts = useSelector((store) => store.MenProducts);
+  const scroll = useSelector((store) => store.scrollToHomepage.scrollY);
   const dispatch = useDispatch();
   const location = useLocation();
+  const [scrollValue, setScrollValue] = useState();
+  window.scrollTo(0, scroll);
   // console.log(menProducts);
 
   //#region UseParams and UseSearchParams
@@ -89,9 +91,12 @@ const MenCategory = () => {
         gender: event.target.value,
       };
     });
+    window.scrollTo(0, 280);
   };
   const handleCategoryValue = (event) => {
     setCategoryValue(event.target.value);
+    window.scrollTo(0, 280);
+
     // ChipFilters[0].value = event.target.value;
   };
   const handleSizeValue = (event) => {
@@ -103,6 +108,8 @@ const MenCategory = () => {
           size: event.target.value,
         };
       });
+      window.scrollTo(0, 280);
+
       setSearchParams({ size: event.target.value });
     } else {
       setSearchParams();
@@ -119,6 +126,7 @@ const MenCategory = () => {
         };
       });
       setSearchParams({ color: event.target.value });
+      window.scrollTo(0, 280);
     } else {
       setSearchParams();
     }
@@ -126,6 +134,7 @@ const MenCategory = () => {
 
   const handlePriceValue = (event) => {
     setPriceValue(event.target.value);
+    window.scrollTo(0, 280);
   };
 
   const handleDelete = (value) => {
@@ -202,11 +211,15 @@ const MenCategory = () => {
     dispatch(fetchMenProducts({ sizeValue, colorValue, categoryValue }));
   }, [sizeValue, colorValue, categoryValue]);
 
+  useEffect(() => {
+    window.scrollTo(0, scroll);
+  }, [scroll]);
+
   // Page Section
   return (
     <>
       {/* Breadcrumb section */}
-      <Box id="top">
+      <Box>
         <Breadcrumbs
           separator=">"
           sx={{
@@ -348,6 +361,11 @@ const MenCategory = () => {
             sx={{
               ml: 1,
               display: { xs: "none", md: "flex" },
+              position: "sticky", // Make the sidebar fixed
+              top: 0, // Adjust the top position as needed
+              height: "100vh", // Set the height to match the viewport height
+              overflowY: "auto", // Allow vertical scrolling if content overflows
+              overflowX: "hidden",
             }}
             display="flex"
             justifyContent={"center"}
@@ -549,10 +567,15 @@ const MenCategory = () => {
                         maxWidth: 250,
                       }}
                     >
-                      <NavLink to={`products/${item.id}${location.search}`}>
+                      <NavLink
+                        onClick={() => {
+                          dispatch(updateScrollValue(window.scrollY));
+                        }}
+                        to={`products/${item.id}${location.search}`}
+                      >
                         <CardMedia
                           component={"img"}
-                          image={`${imageFolderPath}${item.picture}`}
+                          image={`/${item.picture}`}
                           width="100%"
                         />
                       </NavLink>
@@ -595,10 +618,10 @@ const MenCategory = () => {
                           <Typography> Rating: {item.rating} / 5</Typography>
                           {/* Price after discount */}
                           <Typography variant="h6" color="red">
-                            {(
-                              item.originalPrice -
-                              (item.originalPrice * item.discount) / 100
-                            ).toFixed(2)}
+                            {priceAfterDiscount(
+                              item.originalPrice,
+                              item.discount
+                            )}
                             {" $"}
                           </Typography>
                           {/* Prce before discount */}

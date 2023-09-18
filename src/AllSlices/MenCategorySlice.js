@@ -1,21 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-const menProductsURL = "http://localhost:8000/MenCategory/";
+import { baseURL } from "../../jsonServerURL";
+const menProductsURL = `${baseURL}MenCategory/`;
 
 export const fetchMenProducts = createAsyncThunk(
   "menProducts/fetchData",
   async (filter, { rejectWithValue }) => {
     try {
-      console.log("value: ", filter);
+      // console.log("value: ", filter);
       if (filter.id) {
         const response = await axios.get(`${menProductsURL}/${filter.id}`);
         if (response.status == 200) {
-          console.log(response.data);
+          // console.log(response.data);
           return response.data;
         }
       } else {
         let searchParams = "/?";
-        console.log(searchParams);
+        // console.log(searchParams);
         if (filter.sizeValue !== "All Sizes") {
           searchParams += `size=${filter.sizeValue.toLowerCase()}`;
           console.log(searchParams, "searchParams");
@@ -25,7 +26,7 @@ export const fetchMenProducts = createAsyncThunk(
         }
         const response = await axios.get(`${menProductsURL}${searchParams}`);
         if (response.status === 200) {
-          console.log("men: ", response.data);
+          // console.log("men: ", response.data);
 
           return response.data;
         }

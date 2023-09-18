@@ -1,13 +1,21 @@
 import { configureStore } from "@reduxjs/toolkit";
-import ProductsSlice from "./ProductsSlice";
-import MenProductSlice from "./MenCategorySlice";
-import { MenSingleProduct } from "./MenCategorySlice";
-import BagSlice from "./BagSlice";
+
+import { MenSingleProduct } from "./AllSlices/MenCategorySlice";
+
+import {
+  BagSlice,
+  MenProductSlice,
+  NewestProducts,
+  ProductsSlice,
+  scrollToHomepage,
+} from "./AllSlices/AllSlice.js";
 export const store = configureStore({
   reducer: {
     products: ProductsSlice,
     MenProducts: MenProductSlice,
     singleProduct: MenSingleProduct.reducer,
     Bag: BagSlice,
+    NewestProducts: NewestProducts,
+    scrollToHomepage,
   },
 });

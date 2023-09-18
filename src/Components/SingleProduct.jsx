@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { BreadCrumbsLinks } from "./components";
-import { fetchSingleProduct } from "../MenCategorySlice.js";
+import { fetchSingleProduct } from "../AllSlices/MenCategorySlice.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
@@ -32,19 +32,21 @@ import {
   isProductExistInBag,
   updatingCountInProduct,
   updateBag,
-} from "../BagSlice.js";
+} from "../AllSlices/BagSlice.js";
 import { PaymentMethod } from "./components.js";
+import { toast } from "react-toastify";
+import { priceAfterDiscount } from "../Utility/PriceDiscount.jsx";
 
-const imageFolderPath = "../../public/";
+const imageFolderPath = "./public/";
 
 const SingleProduct = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const singleProduct = useSelector((store) => store.singleProduct);
   const { productId } = useParams();
   const dispatch = useDispatch();
+  const location = useLocation();
 
-  // console.log(useLocation().pathname);
-  // console.log(singleProduct.singleProduct);
+  // console.log(location.pathname);
 
   const AddToBag = async () => {
     setButtonDisabled(true);
@@ -55,11 +57,18 @@ const SingleProduct = () => {
       isProductExist.message === "Network Error"
     ) {
       setButtonDisabled(false);
-      alert(isProductExist.message);
+      // alert(isProductExist.message);
+      toast.error(isProductExist.message, {
+        position: "top-right",
+        autoClose: 5000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "light",
+      });
       return;
     }
     if (isProductExist.state) {
-      console.log("productCount", isProductExist.data);
+      // console.log("productCount", isProductExist.data);
 
       product = {
         ...isProductExist.data,
@@ -69,28 +78,70 @@ const SingleProduct = () => {
       const status = await updatingCountInProduct(product);
       if (status.state === false && status.error == "networkError") {
         setButtonDisabled(false);
-        alert(status.message);
+        // alert(status.message);
+        toast.error(status.message, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "light",
+        });
         return;
       }
       if (status.state) {
+        toast.info(`${product.productName} is added to your bag`, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "light",
+        });
         dispatch(updateBag(product.id));
       } else {
-        alert(status.error);
+        // alert(status.error);
+        toast.error(status.error, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "light",
+        });
         setButtonDisabled(false);
       }
     } else {
-      product = { ...product, count: 1 };
+      product = { ...product, count: 1, checked: true };
       const status = await addBagToDatabase(product);
       if (status.state === false && status.error === "NetworkError") {
-        alert(status.message);
+        // alert(status.message);
+        toast.error(status.message, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "light",
+        });
         setButtonDisabled(false);
         return;
       }
       if (status.state) {
         // console.log("status: ", status);
+        toast.info(`${product.productName} is added to your bag`, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "light",
+        });
         dispatch(addToBag(product));
       } else {
-        alert(status.message);
+        // alert(status.message);
+        toast.error(status.message, {
+          position: "top-right",
+          autoClose: 5000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: "light",
+        });
       }
     }
     setButtonDisabled(false);
@@ -98,7 +149,7 @@ const SingleProduct = () => {
 
   useEffect(() => {
     dispatch(fetchSingleProduct(productId));
-  }, []);
+  }, [location.pathname]);
 
   return (
     <>
@@ -144,7 +195,7 @@ const SingleProduct = () => {
         ) : singleProduct.status === "succeeded" ? (
           <>
             <Box>
-              <NavLink to={`/products/Men/${useLocation().search}`}>
+              <NavLink to={`/products/Men/${location.search}`}>
                 <Button variant="text">Back</Button>
               </NavLink>
             </Box>
@@ -171,7 +222,7 @@ const SingleProduct = () => {
                 >
                   <CardMedia
                     component={"img"}
-                    image={`${imageFolderPath}${singleProduct.singleProduct.picture}`}
+                    image={`/${singleProduct.singleProduct.picture}`}
                   />
                 </Card>
               </Box>
@@ -209,12 +260,10 @@ const SingleProduct = () => {
                   </span>
                 </Typography>
                 <Typography variant="h5" color="black">
-                  {(
-                    singleProduct.singleProduct.originalPrice -
-                    (singleProduct.singleProduct.originalPrice *
-                      singleProduct.singleProduct.discount) /
-                      100
-                  ).toFixed(2)}
+                  {priceAfterDiscount(
+                    singleProduct.singleProduct.originalPrice,
+                    singleProduct.singleProduct.discount
+                  )}
                   {" $"}
                 </Typography>
                 <Divider />

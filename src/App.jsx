@@ -1,3 +1,5 @@
+import { ToastContainer } from "react-toastify";
+
 import {
   HelpSection,
   Navbar,
@@ -9,6 +11,10 @@ import {
 } from "./Components/components.js";
 
 import { Routes, Route, Outlet } from "react-router-dom";
+
+import { Box } from "@mui/material";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const BasicLayout = () => {
   return (
@@ -23,7 +29,7 @@ const BasicLayout = () => {
 
 const App = () => {
   return (
-    <>
+    <Box>
       <Routes>
         <Route path="/" element={<BasicLayout />}>
           <Route index element={<AllCard />} />
@@ -39,7 +45,8 @@ const App = () => {
           <Route path="*" element={<h2>Not found</h2>} />
         </Route>
       </Routes>
-    </>
+      <ToastContainer />
+    </Box>
   );
 };
 

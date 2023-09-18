@@ -12,3 +12,5 @@ export { default as SidebarContent } from "./SidebarContent.jsx";
 export { default as LoadingComponent } from "./LoadingComponent.jsx";
 export { default as Bag } from "./Bag.jsx";
 export { default as PaymentMethod } from "./PaymentMethod.jsx";
+export { default as BagProduct } from "./BagProduct.jsx";
+export { default as MyTooltip } from "./Tooltip.jsx";

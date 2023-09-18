@@ -7,13 +7,22 @@ import {
   Tab,
   Tabs,
   Typography,
+  Tooltip,
   styled,
 } from "@mui/material";
+
+import { Delete } from "@mui/icons-material";
 import { useState } from "react";
-import { Outlet } from "react-router";
 
 const Categories = () => {
   const [open, setOpen] = useState(false);
+
+  const handleMouseEnter = () => {
+    setOpen(true);
+  };
+  const handleMouseLeave = () => {
+    setOpen(false);
+  };
 
   //   const handleOpen = (event, newValue) => {
   //     setOpen((prevData) => !prevData);
@@ -57,6 +66,22 @@ const Categories = () => {
         sx={{
           backgroundColor: "rgb(91, 91, 91)",
           overflowX: "auto",
+          scrollbarWidth: "thin", // For Firefox
+          scrollbarColor: "#888 #f1f1f1", // For Firefox
+          "&::-webkit-scrollbar": {
+            height: "10px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "#f1f1f1",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#888",
+            borderRadius: "10px",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "#555",
+          },
         }}
         maxWidth="xl"
       >
@@ -72,32 +97,34 @@ const Categories = () => {
         >
           {categories.map((item, index) => {
             return (
-              <MyBox key={index}>
+              <MyBox
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                key={index}
+              >
                 <StyledLink href="#">{item}</StyledLink>
               </MyBox>
             );
           })}
-          {/* <Menu
-          open={open}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "center",
-            horizontal: "center",
-          }}
-          transformOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-        >
           <Box
             sx={{
-              width: "200px",
-              height: "200px",
+              display: open ? "block" : "none",
             }}
           >
-            <Typography>Text</Typography>
+            <Tooltip title="Delete Products">
+              <IconButton
+                onClick={() => {
+                  handleOpenDialog(item);
+                }}
+              >
+                <Delete
+                  sx={{
+                    verticalAlign: "middle",
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
           </Box>
-        </Menu> */}
         </Box>
       </Container>
     </>

@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { baseURL } from "../../jsonServerURL";
 
-const productsURL = "http://localhost:8000/products";
-// const sqlURl = "jdbc:mysql://sql6.freesqldatabase.com:3306/sql6641442";
+const productsURL = `${baseURL}products`;
 
 export const fetchAllProducts = createAsyncThunk(
   "products/fetchProducts",
