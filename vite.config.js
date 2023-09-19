@@ -5,5 +5,6 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   // base: "/TrendyolClone/",
-  base: import.meta.env.MODE === "production" ? "/TrendyolClone/" : "/",
+  // base: import.meta.env.MODE === "production" ? "/TrendyolClone/" : "/",
+  base: "/",
 });
