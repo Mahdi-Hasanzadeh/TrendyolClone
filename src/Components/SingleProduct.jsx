@@ -222,7 +222,7 @@ const SingleProduct = () => {
                 >
                   <CardMedia
                     component={"img"}
-                    image={`./${singleProduct.singleProduct.picture}`}
+                    image={`/TrendyolClone/${singleProduct.singleProduct.picture}`}
                   />
                 </Card>
               </Box>

@@ -47,7 +47,7 @@ const AllCard = () => {
               <Link to={`products/Men/products/${item.id}`}>
                 <CardMedia
                   component={"img"}
-                  image={`./${item.picture}`}
+                  image={`/TrendyolClone/${item.picture}`}
                   width="100%"
                   sx={{
                     objectFit: "contain",

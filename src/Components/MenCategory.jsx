@@ -575,7 +575,7 @@ const MenCategory = () => {
                       >
                         <CardMedia
                           component={"img"}
-                          image={`./${item.picture}`}
+                          image={`/TrendyolClone/${item.picture}`}
                           width="100%"
                         />
                       </NavLink>
