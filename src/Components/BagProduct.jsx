@@ -31,7 +31,7 @@ const BagProduct = ({ product, hover }) => {
             borderRadius: "7px",
           }}
           width={"100%"}
-          src={`docs/${product.picture}`}
+          src={`./${product.picture}`}
           alt={product.productName}
         />
       </Box>

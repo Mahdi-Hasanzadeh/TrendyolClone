@@ -18,6 +18,7 @@ const AllCard = () => {
   const newestProducts = useSelector((store) => store.NewestProducts);
   const scroll = useSelector((store) => store.scrollToHomepage);
   // console.log("All cards", myProducts);
+  const path = "../assets/";
 
   const [activeStep, setActiveStep] = useState(0);
   const handleStepChange = (item) => {
@@ -46,7 +47,7 @@ const AllCard = () => {
               <Link to={`products/Men/products/${item.id}`}>
                 <CardMedia
                   component={"img"}
-                  image={`/public/${item.picture}`}
+                  image={`../../public/${item.picture}`}
                   width="100%"
                   sx={{
                     objectFit: "contain",
